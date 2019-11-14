@@ -2,78 +2,49 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
-	"regexp"
-	"strings"
+	"sort"
 	"time"
 
-	"github.com/PuerkitoBio/goquery"
+	"default/domain/service"
 )
 
-func main() {
-	const baseURL = "https://db.netkeiba.com"
-	const term = 3
+const baseURL = "https://db.netkeiba.com"
+const term = 3
 
-	now := time.Now()
+var now time.Time
 
+func getEventDateLinks() []string {
+	var links []string
 	for i := 0; i < term; i++ {
 		target := now.AddDate(0, -i, 0)
-
 		url := fmt.Sprintf("%s/?pid=race_top&date=%d%d", baseURL, target.Year(), target.Month())
+		doc := service.GetHTMLDoc(url)
+		links = append(links, service.GetLinks(doc, `^/race/list/\d+/$`)...)
+	}
+	sort.Sort(sort.Reverse(sort.StringSlice(links)))
 
-		res, err := http.Get(url)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer res.Body.Close()
-		if res.StatusCode != 200 {
-			log.Fatalf("HTTP status code error: %d %s", res.StatusCode, res.Status)
-		}
+	return service.UniqStr(links)
+}
 
-		doc, err := goquery.NewDocumentFromReader(res.Body)
-		if err != nil {
-			log.Fatal(err)
-		}
+func getRaceLinks(eventDateLinks []string) []string {
+	var links []string
+	for _, l := range eventDateLinks {
+		time.Sleep(1 * time.Second)
 
-		var links []string
-		doc.Find("a").Each(func(_ int, s *goquery.Selection) {
-			link, _ := s.Attr("href")
+		doc := service.GetHTMLDoc(baseURL + l)
+		links = append(links, service.GetLinks(doc, `^/race/\d+/$`)...)
+	}
 
-			if strings.Contains(link, "/race/list/") {
-				links = append(links, link)
-			}
-		})
+	return links
+}
 
-		for _, l := range links {
-			time.Sleep(1 * time.Second)
+func main() {
+	now = time.Now()
 
-			res, err := http.Get(baseURL + l)
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer res.Body.Close()
-			if res.StatusCode != 200 {
-				log.Fatalf("HTTP status code error: %d %s", res.StatusCode, res.Status)
-			}
+	eventDateLinks := getEventDateLinks()
+	RaceLinks := getRaceLinks(eventDateLinks)
 
-			doc, err := goquery.NewDocumentFromReader(res.Body)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			var links []string
-			doc.Find("a").Each(func(_ int, s *goquery.Selection) {
-				link, _ := s.Attr("href")
-
-				if regexp.MustCompile(`^/race/\d+/$`).MatchString(link) {
-					links = append(links, link)
-				}
-			})
-
-			for _, l := range links {
-				fmt.Println(baseURL + l)
-			}
-		}
+	for _, e := range RaceLinks {
+		fmt.Println(baseURL + e)
 	}
 }
