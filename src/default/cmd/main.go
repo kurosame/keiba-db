@@ -16,6 +16,8 @@ var now time.Time
 func getEventDateLinks() []string {
 	var links []string
 	for i := 0; i < term; i++ {
+		time.Sleep(1 * time.Second)
+
 		target := now.AddDate(0, -i, 0)
 		url := fmt.Sprintf("%s/?pid=race_top&date=%d%d", baseURL, target.Year(), target.Month())
 		doc := service.GetHTMLDoc(url)
@@ -41,10 +43,21 @@ func getRaceLinks(eventDateLinks []string) []string {
 func main() {
 	now = time.Now()
 
-	eventDateLinks := getEventDateLinks()
-	RaceLinks := getRaceLinks(eventDateLinks)
+	// eventDateLinks := getEventDateLinks()
+	// RaceLinks := getRaceLinks(eventDateLinks)
 
-	for _, e := range RaceLinks {
-		fmt.Println(baseURL + e)
-	}
+	// doc := service.GetHTMLDoc("https://db.netkeiba.com/race/201910021212/")
+	// doc.Find(".race_table_01 > tbody > tr > th").Each(func(_ int, s *goquery.Selection) {
+	// 	aaa, _ := s.Html()
+	// 	fmt.Println(aaa)
+	// 	// link, _ := s.Attr("href")
+
+	// 	// if regexp.MustCompile(filterRegexp).MatchString(link) {
+	// 	// 	links = append(links, link)
+	// 	// }
+	// })
+
+	// for _, e := range RaceLinks {
+	// 	fmt.Println(baseURL + e)
+	// }
 }

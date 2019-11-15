@@ -1,11 +1,14 @@
 package service
 
 import (
+	"bufio"
 	"log"
 	"net/http"
 	"regexp"
 
 	"github.com/PuerkitoBio/goquery"
+	"golang.org/x/text/encoding/japanese"
+	"golang.org/x/text/transform"
 )
 
 // GetHTMLDoc is get HTML document
@@ -19,7 +22,8 @@ func GetHTMLDoc(url string) *goquery.Document {
 		log.Fatalf("HTTP status code error: %d %s", res.StatusCode, res.Status)
 	}
 
-	doc, err := goquery.NewDocumentFromReader(res.Body)
+	bodyToJp := transform.NewReader(bufio.NewReader(res.Body), japanese.EUCJP.NewDecoder())
+	doc, err := goquery.NewDocumentFromReader(bodyToJp)
 	if err != nil {
 		log.Fatal(err)
 	}
