@@ -49,7 +49,9 @@ func main() {
 	doc := service.GetHTMLDoc("https://db.netkeiba.com/race/201910021212/")
 	texts := service.GetTexts(doc, ".race_table_01 > tbody > tr > th")
 
-	for _, e := range texts {
-		fmt.Println(e)
-	}
+	service.OutputCSV(texts)
+
+	// for _, e := range texts {
+	// 	fmt.Println(e)
+	// }
 }

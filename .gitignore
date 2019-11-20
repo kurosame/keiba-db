@@ -1,5 +1,8 @@
 .envrc
 bin/
+dataset/**/*
 pkg/
 github.com/
 golang.org/
+
+!.gitkeep
