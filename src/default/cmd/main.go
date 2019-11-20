@@ -46,18 +46,10 @@ func main() {
 	// eventDateLinks := getEventDateLinks()
 	// RaceLinks := getRaceLinks(eventDateLinks)
 
-	// doc := service.GetHTMLDoc("https://db.netkeiba.com/race/201910021212/")
-	// doc.Find(".race_table_01 > tbody > tr > th").Each(func(_ int, s *goquery.Selection) {
-	// 	aaa, _ := s.Html()
-	// 	fmt.Println(aaa)
-	// 	// link, _ := s.Attr("href")
+	doc := service.GetHTMLDoc("https://db.netkeiba.com/race/201910021212/")
+	texts := service.GetTexts(doc, ".race_table_01 > tbody > tr > th")
 
-	// 	// if regexp.MustCompile(filterRegexp).MatchString(link) {
-	// 	// 	links = append(links, link)
-	// 	// }
-	// })
-
-	// for _, e := range RaceLinks {
-	// 	fmt.Println(baseURL + e)
-	// }
+	for _, e := range texts {
+		fmt.Println(e)
+	}
 }
