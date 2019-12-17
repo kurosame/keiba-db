@@ -45,11 +45,16 @@ func GetLinks(doc *goquery.Document, filterRegexp string) []string {
 	return links
 }
 
-// GetTexts is get all texts matched elements by selector
+// GetTexts is get all HTML texts matched elements by selector
 func GetTexts(doc *goquery.Document, selector string) []string {
 	var texts []string
 	doc.Find(selector).Each(func(_ int, s *goquery.Selection) {
-		texts = append(texts, s.Text())
+		html, err := s.Html()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		texts = append(texts, html)
 	})
 
 	return texts

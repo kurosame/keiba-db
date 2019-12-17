@@ -18,6 +18,14 @@
   version = "v1.1.0"
 
 [[projects]]
+  digest = "1:6ff1026b8d873d074ddec82ad60bb0eb537dc013f456ef26b63d30beba2f99e7"
+  name = "github.com/microcosm-cc/bluemonday"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "506f3da9b7c86d737e91f16b7431df8635871552"
+  version = "v1.0.2"
+
+[[projects]]
   branch = "master"
   digest = "1:46cdc35c1813b1ebcb372087e78ff161f1bafee8ecd268a54f21d15c5fcfdc0a"
   name = "golang.org/x/net"
@@ -49,6 +57,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/PuerkitoBio/goquery",
+    "github.com/microcosm-cc/bluemonday",
     "golang.org/x/text/encoding/japanese",
     "golang.org/x/text/transform",
   ]

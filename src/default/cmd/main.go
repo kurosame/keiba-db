@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sort"
+	"strings"
 	"time"
 
 	"default/domain/service"
@@ -44,14 +45,24 @@ func main() {
 	now = time.Now()
 
 	// eventDateLinks := getEventDateLinks()
-	// RaceLinks := getRaceLinks(eventDateLinks)
+	// raceLinks := getRaceLinks(eventDateLinks)
 
 	doc := service.GetHTMLDoc("https://db.netkeiba.com/race/201910021212/")
-	texts := service.GetTexts(doc, ".race_table_01 > tbody > tr > th")
+	texts := service.GetTexts(doc, ".race_table_01 > tbody > tr")
 
-	service.OutputCSV(texts)
+	for i, t := range texts {
+		// Exclude header
+		if i == 0 {
+			continue
+		}
 
-	// for _, e := range texts {
-	// 	fmt.Println(e)
-	// }
+		tr := strings.NewReplacer("</td>\n", "</td>\n", "\n", "").Replace(t)
+		ts := service.SanitizeHTML(tr)
+
+		fmt.Println("s***********************************")
+		fmt.Println(ts[3])
+		fmt.Println("e***********************************")
+	}
+
+	// service.OutputCSV(texts)
 }
