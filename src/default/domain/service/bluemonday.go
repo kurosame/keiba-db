@@ -8,7 +8,7 @@ import (
 
 // SanitizeHTML is sanitize HTML texts without policy
 func SanitizeHTML(html string) []string {
-	sh := bluemonday.NewPolicy().Sanitize(html)
+	hs := bluemonday.NewPolicy().Sanitize(html)
 
-	return strings.Split(sh, "\n")
+	return strings.Split(hs, "\n")
 }
