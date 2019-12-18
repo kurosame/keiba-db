@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"default/domain/model"
 	"default/domain/service"
 )
 
@@ -50,6 +51,7 @@ func main() {
 	doc := service.GetHTMLDoc("https://db.netkeiba.com/race/201910021212/")
 	texts := service.GetTexts(doc, ".race_table_01 > tbody > tr")
 
+	var raceResults []*model.RaceResult
 	for i, t := range texts {
 		// Exclude header
 		if i == 0 {
@@ -59,10 +61,35 @@ func main() {
 		tr := strings.NewReplacer("</td>\n", "</td>\n", "\n", "").Replace(t)
 		ts := service.SanitizeHTML(tr)
 
-		fmt.Println("s***********************************")
-		fmt.Println(ts[3])
-		fmt.Println("e***********************************")
+		raceResult := &model.RaceResult{
+			Rank:         ts[0],
+			FrameNumber:  ts[1],
+			HorseNumber:  ts[2],
+			HorseName:    ts[3],
+			Age:          ts[4],
+			Weight:       ts[5],
+			JockeyName:   ts[6],
+			Time:         ts[7],
+			Gap:          ts[8],
+			TimeIndex:    ts[9],
+			Passing:      ts[10],
+			Rise:         ts[11],
+			Odds:         ts[12],
+			Popular:      ts[13],
+			HorseWeight:  ts[14],
+			TrainingTime: ts[15],
+			Comment:      ts[16],
+			Remarks:      ts[17],
+			TrainerName:  ts[18],
+			OwnerName:    ts[19],
+			Prize:        ts[20]}
+		raceResults = append(raceResults, raceResult)
 	}
+	race := &model.Race{RaceResults: raceResults}
+
+	fmt.Println("s***********************************")
+	fmt.Println(race.ToJSON())
+	fmt.Println("e***********************************")
 
 	// service.OutputCSV(texts)
 }
