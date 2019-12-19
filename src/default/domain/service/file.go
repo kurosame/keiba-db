@@ -1,20 +1,25 @@
 package service
 
 import (
-	"encoding/csv"
+	"bufio"
 	"log"
 	"os"
 )
 
-// OutputCSV is output CSV to dataset directory
-func OutputCSV(row []string) {
-	file, err := os.Create("./dataset/netkeiba.csv")
+// OutputJSONL is output jsonl to dataset directory
+func OutputJSONL(rows []string) {
+	file, err := os.Create("./dataset/netkeiba.jsonl")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
 
-	writer := csv.NewWriter(file)
-	writer.Write(row)
+	writer := bufio.NewWriter(file)
+	for _, r := range rows {
+		_, err := writer.WriteString(r + "\n")
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 	writer.Flush()
 }

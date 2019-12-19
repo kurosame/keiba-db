@@ -87,9 +87,5 @@ func main() {
 	}
 	race := &model.Race{RaceResults: raceResults}
 
-	fmt.Println("s***********************************")
-	fmt.Println(race.ToJSON())
-	fmt.Println("e***********************************")
-
-	// service.OutputCSV(texts)
+	service.OutputJSONL([]string{race.ToJSON()})
 }
